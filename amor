@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Dia dos Namorados</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #8B0000;
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+#canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+
+.title {
+    color: #FFD700;
+    font-size: 2.8em;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.3);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.photo-container {
+    max-width: 500px;
+    width: 90%;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(255,215,0,0.2);
+    border: 3px solid rgba(255,215,0,0.3);
+}
+
+.photo-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.text-box {
+    max-width: 700px;
+    width: 90%;
+    background: rgba(0,0,0,0.4);
+    padding: 35px 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,215,0,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.text-box p {
+    color: #FFF0F5;
+    font-size: 1.15em;
+    line-height: 1.9;
+    text-align: justify;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.text-box p + p {
+    margin-top: 18px;
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 1.8em;
+    }
+    .text-box {
+        padding: 25px 20px;
+    }
+    .text-box p {
+        font-size: 1em;
+        line-height: 1.7;
+    }
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div class="content">
+    <h1 class="title">Feliz Dia dos Namorados</h1>
+
+    <div class="photo-container">
+        <img src="foto.jpg" alt="Nosso amor">
+    </div>
+
+    <div class="text-box">
+        <p>É bizarro como o amor pega a gente de surpresa e vira tudo de ponta-cabeça sem pedir licença. No começo, foi aquele baque, uma química absurda que me engoliu por completo e me fez perceber que eu não queria passar nem mais um segundo longe de você. Fiquei completamente hipnotizada pelo seu jeito, pela sua energia e por essa tua capacidade linda de fazer o mundo parecer um lugar bem melhor quando você tá por perto.</p>
+
+        <p>Só que a gente sabe bem que a vida real não é um comercial de TV. O nosso caminho foi cheio de curvas tortas, provações e barreiras que pareciam testar o nosso limite o tempo todo. Teve hora que o cenário pesou, que deu medo e que tudo parecia dar errado ao mesmo tempo. Mas o que me dá mais orgulho na nossa história é que, não importava o tamanho do caos do lado de fora, a gente sempre se olhava no meio do furacão e decidia ficar. A gente bateu o pé e se escolheu.</p>
+
+        <p>E não foi por capricho, foi porque a gente sabe exatamente onde quer chegar. Desde o primeiro dia, o foco nunca mudou: construir o nosso amanhã juntas, blindar a nossa relação e planejar cada pedacinho do futuro que a gente merece ter. Passamos por cima de tudo isso porque o prêmio final é uma vida inteira do seu lado.</p>
+
+        <p>Feliz Dia dos Namorados. Amo você e amo o que estamos construindo.</p>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let width, height;
+const hearts = [];
+const heartCount = 60;
+
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function createHeart() {
+    const size = Math.random() * 18 + 10;
+    return {
+        x: Math.random() * width,
+        y: -size - Math.random() * 100,
+        size: size,
+        speedY: Math.random() * 1.5 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.8,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.03,
+        opacity: Math.random() * 0.5 + 0.5,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: Math.random() * 0.02 + 0.01
+    };
+}
+
+for (let i = 0; i < heartCount; i++) {
+    const h = createHeart();
+    h.y = Math.random() * height;
+    hearts.push(h);
+}
+
+function drawGlitterHeart(ctx, x, y, size, rotation, opacity) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.globalAlpha = opacity;
+
+    // Silver glitter heart
+    const gradient = ctx.createRadialGradient(0, -size*0.2, 0, 0, 0, size);
+    gradient.addColorStop(0, '#FFFFFF');
+    gradient.addColorStop(0.3, '#E8E8E8');
+    gradient.addColorStop(0.6, '#C0C0C0');
+    gradient.addColorStop(1, '#A0A0A0');
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    const topCurveHeight = size * 0.3;
+    ctx.moveTo(0, size * 0.25);
+    ctx.bezierCurveTo(-size * 0.5, -size * 0.25, -size, topCurveHeight, 0, size);
+    ctx.bezierCurveTo(size, topCurveHeight, size * 0.5, -size * 0.25, 0, size * 0.25);
+    ctx.fill();
+
+    // Glitter sparkle dots
+    ctx.fillStyle = '#FFFFFF';
+    const sparkles = [
+        [-size*0.15, -size*0.1, size*0.08],
+        [size*0.1, size*0.2, size*0.06],
+        [-size*0.05, size*0.5, size*0.1],
+        [size*0.2, size*0.4, size*0.05],
+        [-size*0.25, size*0.3, size*0.04],
+        [0, size*0.7, size*0.07],
+        [size*0.15, -size*0.05, size*0.06]
+    ];
+
+    sparkles.forEach(([sx, sy, ss]) => {
+        ctx.globalAlpha = opacity * (0.6 + Math.random() * 0.4);
+        ctx.beginPath();
+        ctx.arc(sx, sy, ss, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Extra sparkle stars
+    ctx.globalAlpha = opacity * 0.8;
+    for (let i = 0; i < 3; i++) {
+        const sx = (Math.random() - 0.5) * size * 0.8;
+        const sy = (Math.random() - 0.5) * size * 0.8;
+        const ss = Math.random() * size * 0.06 + 1;
+        ctx.fillStyle = Math.random() > 0.5 ? '#FFFFFF' : '#D0D0D0';
+        ctx.beginPath();
+        ctx.arc(sx, sy, ss, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.restore();
+}
+
+function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    hearts.forEach(h => {
+        h.y += h.speedY;
+        h.wobble += h.wobbleSpeed;
+        h.x += h.speedX + Math.sin(h.wobble) * 0.5;
+        h.rotation += h.rotSpeed;
+
+        if (h.y > height + h.size * 2) {
+            h.y = -h.size * 2;
+            h.x = Math.random() * width;
+        }
+
+        drawGlitterHeart(ctx, h.x, h.y, h.size, h.rotation, h.opacity);
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
